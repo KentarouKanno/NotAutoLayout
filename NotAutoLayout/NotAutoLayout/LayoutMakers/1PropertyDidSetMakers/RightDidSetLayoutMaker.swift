@@ -8,17 +8,33 @@
 
 import Foundation
 
-public struct RightDidSetLayoutMaker {
+public protocol LayoutElementRightType: LayoutElementType {
 	
-	public unowned let parentView: UIView
+	var right: LayoutElement.Float { get }
 	
-	let right: LayoutElement.Float
+}
+
+extension LayoutElement {
+	
+	public struct Right: LayoutElementRightType {
+		
+		public let right: LayoutElement.Float
+		
+	}
+	
+}
+
+extension LayoutMaker where DidSetLayoutElement: LayoutElementRightType {
+	
+	var right: LayoutElement.Float {
+		return self.didSetLayoutElement.right
+	}
 	
 }
 
 // MARK: - Set A Line -
 // MARK: Top
-extension RightDidSetLayoutMaker {
+extension LayoutMaker where DidSetLayoutElement: LayoutElementRightType {
 	
 	public func setTop(to top: CGFloat) -> RightTopDidSetLayoutMaker {
 		
@@ -88,7 +104,7 @@ extension RightDidSetLayoutMaker {
 }
 
 // MARK: Middle
-extension RightDidSetLayoutMaker {
+extension LayoutMaker where DidSetLayoutElement: LayoutElementRightType {
 	
 	public func setMiddle(to middle: CGFloat) -> RightMiddleDidSetLayoutMaker {
 		
@@ -158,7 +174,7 @@ extension RightDidSetLayoutMaker {
 }
 
 // MARK: Bottom
-extension RightDidSetLayoutMaker {
+extension LayoutMaker where DidSetLayoutElement: LayoutElementRightType {
 	
 	public func setBottom(to bottom: CGFloat) -> RightBottomDidSetLayoutMaker {
 		

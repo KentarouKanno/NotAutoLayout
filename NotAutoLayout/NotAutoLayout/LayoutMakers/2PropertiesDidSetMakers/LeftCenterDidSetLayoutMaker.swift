@@ -8,19 +8,53 @@
 
 import Foundation
 
-public struct LeftCenterDidSetLayoutMaker {
+public protocol LayoutElementLeftCenterType: LayoutElementType {
 	
-	public unowned let parentView: UIView
+	var left: LayoutElement.Float { get }
+	var center: LayoutElement.Float { get }
 	
-	let left: LayoutElement.Float
+}
+
+extension LayoutElement {
 	
-	let center: LayoutElement.Float
+	public struct LeftCenter: LayoutElementLeftCenterType {
+		
+		public let left: LayoutElement.Float
+		public let center: LayoutElement.Float
+		
+	}
 	
+}
+
+extension LayoutElement.LeftCenter {
+	
+	init(left: LayoutElement.Float, others: LayoutElementCenterType) {
+		self.left = left
+		self.center = others.center
+	}
+	
+	init(center: LayoutElement.Float, others: LayoutElementLeftType) {
+		self.left = others.left
+		self.center = center
+	}
+	
+}
+
+extension LayoutMaker where DidSetLayoutElement: LayoutElementLeftCenterType {
+	
+	var left: LayoutElement.Float {
+		return self.didSetLayoutElement.left
+	}
+	
+	var center: LayoutElement.Float {
+		return self.didSetLayoutElement.center
+	}
+
 }
 
 // MARK: - Set A Line -
 // MARK: Top
-extension LeftCenterDidSetLayoutMaker {
+extension LayoutMaker where DidSetLayoutElement: LayoutElementLeftCenterType {
 	
 	public func setTop(to top: CGFloat) -> LeftCenterTopDidSetLayoutMaker {
 		
@@ -94,7 +128,7 @@ extension LeftCenterDidSetLayoutMaker {
 }
 
 // MARK: Middle
-extension LeftCenterDidSetLayoutMaker {
+extension LayoutMaker where DidSetLayoutElement: LayoutElementLeftCenterType {
 	
 	public func setMiddle(to middle: CGFloat) -> LeftCenterMiddleDidSetLayoutMaker {
 		
@@ -168,7 +202,7 @@ extension LeftCenterDidSetLayoutMaker {
 }
 
 // MARK: Bottom
-extension LeftCenterDidSetLayoutMaker {
+extension LayoutMaker where DidSetLayoutElement: LayoutElementLeftCenterType {
 	
 	public func setBottom(to bottom: CGFloat) -> LeftCenterBottomDidSetLayoutMaker {
 		
