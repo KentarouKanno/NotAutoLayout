@@ -33,7 +33,7 @@ extension NotAutoLayoutContainer where Containee: UIView {
 	
 	/// The bound size.
 	public var boundSize: CGSize {
-		return self.viewFrameProperty.boundSize
+		return self.viewFrameProperty.bounds.size
 	}
 	
 	@available(iOS 11.0, *)
