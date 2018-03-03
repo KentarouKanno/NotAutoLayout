@@ -16,123 +16,58 @@ public struct ViewFrameProperty {
 
 extension ViewFrameProperty {
 	
-	public var boundSize: CGSize {
+	public var bounds: CGRect {
 		
-		return self.parentView?.bounds.size ?? .zero
+		return self.parentView?.bounds ?? .zero
+		
+	}
+	
+	public var contentsArea: CGRect {
+		
+		return self.bounds.inside(self.layoutMarginInsets)
+		
+	}
+	
+	@available(iOS 11.0, *)
+	public var safeArea: CGRect {
+		
+		return self.bounds.inside(self.safeAreaInsets)
+		
+	}
+	
+}
+
+extension ViewFrameProperty {
+	
+	public var layoutMarginInsets: UIEdgeInsets {
+		
+		return self.parentView?.layoutMargins ?? .zero
 		
 	}
 	
 	@available(iOS 11.0, *)
 	public var safeAreaInsets: UIEdgeInsets {
 		
-		guard let insets = self.parentView?.safeAreaInsets else {
-			return .zero
-		}
-		
-		return insets
+		return self.parentView?.safeAreaInsets ?? .zero
 		
 	}
 	
 }
 
 extension ViewFrameProperty {
-	
-	public var boundWidth: CGFloat {
-		return self.boundSize.width
-	}
-	
-	public var boundHeight: CGFloat {
-		return self.boundSize.height
-	}
-	
-}
-
-extension ViewFrameProperty {
-	
-	public var boundLeft: CGFloat {
-		return 0
-	}
-	
-	public var boundCenter: CGFloat {
-		return self.boundLeft + (self.boundWidth / 2)
-	}
-	
-	public var boundRight: CGFloat {
-		return self.boundLeft + self.boundWidth
-	}
-	
-	public var boundTop: CGFloat {
-		return 0
-	}
-	
-	public var boundMiddle: CGFloat {
-		return self.boundTop + (self.boundHeight / 2)
-	}
-	
-	public var boundBottom: CGFloat {
-		return self.boundTop + self.boundHeight
-	}
 	
 	public func boundHorizontal(at relativePosition: CGFloat) -> CGFloat {
-		return self.boundLeft + (self.boundWidth * relativePosition)
+		return self.bounds.left + (self.bounds.width * relativePosition)
 	}
 	
 	public func boundVertical(at relativePosition: CGFloat) -> CGFloat {
-		return self.boundTop + (self.boundHeight * relativePosition)
-	}
-	
-}
-
-extension ViewFrameProperty {
-	
-	public var boundTopLeft: CGPoint {
-		return .init(x: self.boundLeft, y: self.boundTop)
-	}
-	
-	public var boundTopCenter: CGPoint {
-		return .init(x: self.boundCenter, y: self.boundTop)
-	}
-	
-	public var boundTopRight: CGPoint {
-		return .init(x: self.boundRight, y: self.boundTop)
-	}
-	
-	public var boundMiddleLeft: CGPoint {
-		return .init(x: self.boundLeft, y: self.boundMiddle)
-	}
-	
-	public var boundMiddleCenter: CGPoint {
-		return .init(x: self.boundCenter, y: self.boundMiddle)
-	}
-	
-	public var boundMiddleRight: CGPoint {
-		return .init(x: self.boundRight, y: self.boundMiddle)
-	}
-	
-	public var boundBottomLeft: CGPoint {
-		return .init(x: self.boundLeft, y: self.boundBottom)
-	}
-	
-	public var boundBottomCenter: CGPoint {
-		return .init(x: self.boundCenter, y: self.boundBottom)
-	}
-	
-	public var boundBottomRight: CGPoint {
-		return .init(x: self.boundRight, y: self.boundBottom)
+		return self.bounds.top + (self.bounds.height * relativePosition)
 	}
 	
 	public func boundPoint(at relativePoint: CGPoint) -> CGPoint {
-		let x = self.boundLeft + (self.boundWidth * relativePoint.x)
-		let y = self.boundTop + (self.boundHeight * relativePoint.y)
+		let x = self.boundHorizontal(at: relativePoint.x)
+		let y = self.boundVertical(at: relativePoint.y)
 		return .init(x: x, y: y)
-	}
-	
-}
-
-extension ViewFrameProperty {
-	
-	public var boundFrame: CGRect {
-		return .init(origin: .zero, size: self.boundSize)
 	}
 	
 }
@@ -164,132 +99,20 @@ extension ViewFrameProperty {
 extension ViewFrameProperty {
 	
 	@available(iOS 11.0, *)
-	public var safeWidth: CGFloat {
-		return self.boundWidth - self.safeAreaInsets.width
-	}
-	
-	@available(iOS 11.0, *)
-	public var safeHeight: CGFloat {
-		return self.boundHeight - self.safeAreaInsets.height
-	}
-	
-	@available(iOS 11.0, *)
-	public var safeOrigin: CGPoint {
-		return CGPoint(x: self.leftSafeAreaInset, y: self.topSafeAreaInset)
-	}
-	
-	@available(iOS 11.0, *)
-	public var safeSize: CGSize {
-		return CGSize(width: self.safeWidth, height: self.safeHeight)
-	}
-	
-}
-
-extension ViewFrameProperty {
-	
-	@available(iOS 11.0, *)
-	public var safeLeft: CGFloat {
-		return self.boundLeft + self.safeAreaInsets.left
-	}
-	
-	@available(iOS 11.0, *)
-	public var safeCenter: CGFloat {
-		return self.safeLeft + (self.safeWidth / 2)
-	}
-	
-	@available(iOS 11.0, *)
-	public var safeRight: CGFloat {
-		return self.safeLeft + self.safeWidth
-	}
-	
-	@available(iOS 11.0, *)
-	public var safeTop: CGFloat {
-		return self.boundTop + self.safeAreaInsets.top
-	}
-	
-	@available(iOS 11.0, *)
-	public var safeMiddle: CGFloat {
-		return self.safeTop + (self.safeHeight / 2)
-	}
-	
-	@available(iOS 11.0, *)
-	public var safeBottom: CGFloat {
-		return self.safeTop + self.safeHeight
-	}
-	
-	@available(iOS 11.0, *)
 	public func safeHorizontal(at relativePosition: CGFloat) -> CGFloat {
-		return self.safeLeft + (self.safeWidth * relativePosition)
+		return self.safeArea.left + (self.safeArea.width * relativePosition)
 	}
 	
 	@available(iOS 11.0, *)
 	public func safeVertical(at relativePosition: CGFloat) -> CGFloat {
-		return self.safeTop + (self.safeHeight * relativePosition)
-	}
-	
-}
-
-extension ViewFrameProperty {
-	
-	@available(iOS 11.0, *)
-	public var safeTopLeft: CGPoint {
-		return .init(x: self.safeLeft, y: self.safeTop)
-	}
-	
-	@available(iOS 11.0, *)
-	public var safeTopCenter: CGPoint {
-		return .init(x: self.safeCenter, y: self.safeTop)
-	}
-	
-	@available(iOS 11.0, *)
-	public var safeTopRight: CGPoint {
-		return .init(x: self.safeRight, y: self.safeTop)
-	}
-	
-	@available(iOS 11.0, *)
-	public var safeMiddleLeft: CGPoint {
-		return .init(x: self.safeLeft, y: self.safeMiddle)
-	}
-	
-	@available(iOS 11.0, *)
-	public var safeMiddleCenter: CGPoint {
-		return .init(x: self.safeCenter, y: self.safeMiddle)
-	}
-	
-	@available(iOS 11.0, *)
-	public var safeMiddleRight: CGPoint {
-		return .init(x: self.safeRight, y: self.safeMiddle)
-	}
-	
-	@available(iOS 11.0, *)
-	public var safeBottomLeft: CGPoint {
-		return .init(x: self.safeLeft, y: self.safeBottom)
-	}
-	
-	@available(iOS 11.0, *)
-	public var safeBottomCenter: CGPoint {
-		return .init(x: self.safeCenter, y: self.safeBottom)
-	}
-	
-	@available(iOS 11.0, *)
-	public var safeBottomRight: CGPoint {
-		return .init(x: self.safeRight, y: self.safeBottom)
+		return self.safeArea.top + (self.safeArea.height * relativePosition)
 	}
 	
 	@available(iOS 11.0, *)
 	public func safePoint(at relativePoint: CGPoint) -> CGPoint {
-		let x = self.safeLeft + (self.safeWidth * relativePoint.x)
-		let y = self.safeTop + (self.safeHeight * relativePoint.y)
+		let x = self.safeHorizontal(at: relativePoint.x)
+		let y = self.safeVertical(at: relativePoint.y)
 		return .init(x: x, y: y)
-	}
-	
-}
-
-extension ViewFrameProperty {
-	
-	@available(iOS 11.0, *)
-	public var safeFrame: CGRect {
-		return .init(origin: self.safeOrigin, size: self.safeSize)
 	}
 	
 }
@@ -320,13 +143,13 @@ extension ViewFrameProperty {
 			switch safeAreaOnly {
 			case true:
 				if #available(iOS 11.0, *) {
-					return self.safeSize
+					return self.safeArea.size
 				} else {
 					fallthrough
 				}
 				
 			case false:
-				return self.boundSize
+				return self.bounds.size
 			}
 		}(aspect.safeAreaOnly)
 		
